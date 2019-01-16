@@ -6,6 +6,7 @@
     <h3><router-link to="/">홈</router-link></h3>
     <h3><router-link to="/login">로그인</router-link></h3>
     <h3><router-link to="/signup">회원가입</router-link></h3>
+    <!--<h3><router-link to="/hello">헬로우</router-link></h3>-->
   </div>
 </template>
 

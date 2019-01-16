@@ -34,14 +34,15 @@ export default {
           this.info = response.data
           localStorage.setItem('token', this.info.data.token)
           console.log(this.info.data.token)
-          location.href = './home'
+
+          location.href = './hello'
         }
         ).catch(e => {
           console.log(e)
           this.errors(e)
           location.href = './login'
         })
-    }
+    }   
   }
 }
 </script>

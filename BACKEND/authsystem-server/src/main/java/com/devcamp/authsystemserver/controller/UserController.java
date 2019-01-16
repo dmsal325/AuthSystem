@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Optional;
+
 import static com.devcamp.authsystemserver.utils.DefaultRes.FAIL_DEFAULT_RES;
 
 @Slf4j
@@ -20,20 +22,21 @@ public class UserController {
     public UserController(final UserService userService) {
         this.userService = userService;
     }
+
     //로그인
-    @PostMapping(path="/signin")
+    @PostMapping(path = "/signin")
     @CrossOrigin
     public ResponseEntity signin(@RequestBody final User user) {
         try {
             return new ResponseEntity<>(userService.login(user.getUser_id(), user), HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
 //            log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-//    @Auth
-    @GetMapping(path="/users")
+    //    @Auth
+    @GetMapping(path = "/users")
     @CrossOrigin
     public ResponseEntity getUser(@RequestParam("name") final Optional<String> name) {
         try {
@@ -42,20 +45,19 @@ public class UserController {
 ////                return new ResponseEntity<>(userService.findByName(name.get()), HttpStatus.OK);
 ////            }
             return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
 //            log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
-
-    @PostMapping(path="/signup")
+    @PostMapping(path = "/signup")
     @CrossOrigin
     public ResponseEntity signup(@RequestBody final User user) {
         try {
             return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
 //            log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -63,13 +65,13 @@ public class UserController {
 
 
     @Auth
-    @PutMapping(path="/users/{userIdx}")
+    @PutMapping(path = "/users/{userIdx}")
     public ResponseEntity signUp(
             @PathVariable(value = "userIdx") final int userIdx,
             @RequestBody final User user) {
         try {
             return new ResponseEntity<>(userService.update(userIdx, user), HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
 //            log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -77,12 +79,12 @@ public class UserController {
 
 
     @Auth
-    @DeleteMapping(path="/users/{userIdx}")
+    @DeleteMapping(path = "/users/{userIdx}")
 
     public ResponseEntity deleteUser(@PathVariable(value = "userIdx") final int userIdx) {
         try {
             return new ResponseEntity<>(userService.deleteByUserIdx(userIdx), HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
 //            log.error(e.getMessage());
             return new ResponseEntity<>(FAIL_DEFAULT_RES, HttpStatus.INTERNAL_SERVER_ERROR);
         }

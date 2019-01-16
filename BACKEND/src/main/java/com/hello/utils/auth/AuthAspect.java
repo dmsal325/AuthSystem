@@ -1,9 +1,10 @@
-package com.devcamp.authsystemserver.utils.auth;
+package com.hello.utils.auth;
 
-import com.devcamp.authsystemserver.dto.User;
-import com.devcamp.authsystemserver.mapper.UserMapper;
-import com.devcamp.authsystemserver.service.JwtService;
-import com.devcamp.authsystemserver.utils.DefaultRes;
+
+import com.hello.mapper.UserMapper;
+import com.hello.model.User;
+import com.hello.service.JwtService;
+import com.hello.utils.DefaultRes;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -43,18 +44,18 @@ public class AuthAspect {
 
     /**
      * 토큰 유효성 검사
-     *
      * @param pjp
      * @return
      * @throws Throwable
      */
 
     //항상 @annotation 패키지 이름을 실제 사용할 annotation 경로로 맞춰줘야 한다.
-    @Around("@annotation(com.devcamp.authsystemserver.utils.auth.Auth)")
+
+    @Around("@annotation(com.hello.utils.auth.Auth)")
     public Object around(final ProceedingJoinPoint pjp) throws Throwable {
         final String jwt = httpServletRequest.getHeader("token");
         //토큰 존재 여부 확인
-        if (jwt == null) {
+        if (jwt == null){
             System.out.println("jwt없음");
             return RES_RESPONSE_ENTITY;
         }
@@ -67,7 +68,7 @@ public class AuthAspect {
         } else {
             final User user = userMapper.findByUserIdx(token.getUser_idx());
             //유효 사용자 검사
-            if (user == null) {
+            if (user == null){
                 System.out.println("사용자없음");
                 return RES_RESPONSE_ENTITY;
             }

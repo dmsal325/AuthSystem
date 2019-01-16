@@ -16,12 +16,12 @@
       <!--</thead>-->
 
     <tr id="v-for-users" class="demo">
-      <tr v-for="value in object">
+      <td v-for="value in object" v-bind:key="value.user_idx">
         <!--{{ value }}-->
         {{value.user_id}}
         {{value.user_name}}
         {{value.user_age}}
-      </tr>
+      </td>
     </tr>
     </table>
 

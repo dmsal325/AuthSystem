@@ -1,4 +1,5 @@
 package com.devcamp.authsystemserver.config;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +13,10 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 public class RedisConfig {
 
-    private @Value("${redis.host}") String redisHost;
-    private @Value("${redis.port}") int redisPort;
+    private @Value("${redis.host}")
+    String redisHost;
+    private @Value("${redis.port}")
+    int redisPort;
 
     @Bean
     public JedisPoolConfig jedisPoolConfig() {
@@ -31,7 +34,7 @@ public class RedisConfig {
     }
 
 
-    @Bean(name="redisTemplate")
+    @Bean(name = "redisTemplate")
     public RedisTemplate redisTemplateConfig(JedisConnectionFactory jedisConnectionFactory) {
         RedisTemplate redisTemplate = new RedisTemplate();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
