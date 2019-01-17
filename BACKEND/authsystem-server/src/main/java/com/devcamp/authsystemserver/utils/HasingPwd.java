@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 
 public class HasingPwd {
 
-    static public String hasingPwd(String hashingPwd) {
+    static public String hasingPwd(String hashingPwd){
         try {
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -20,7 +20,7 @@ public class HasingPwd {
 
             return hexString.toString();
 
-        } catch (Exception e) {
+        }catch (Exception e){
 
         }
         return "";

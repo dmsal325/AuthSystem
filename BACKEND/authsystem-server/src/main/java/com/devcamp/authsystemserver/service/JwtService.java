@@ -51,12 +51,12 @@ public class JwtService {
         return null;
     }
 
-    private Date expireAt() {
+    private Date expireAt(){
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         //한달은 24*31
         cal.add(Calendar.HOUR, 744);
-        return cal.getTime();
+        return  cal.getTime();
     }
 
 
@@ -90,14 +90,12 @@ public class JwtService {
         //토큰에 담길 정보 필드
         //초기값을 -1로 설정함으로써 로그인 실패시 -1반환
         private int user_idx = -1;
-
         public Token() {
         }
 
         public Token(final int user_idx) {
             this.user_idx = user_idx;
         }
-
         public int getUser_idx() {
             return user_idx;
         }
@@ -108,7 +106,6 @@ public class JwtService {
     public static class TokenRes {
         //실제 토큰
         private String token;
-
         public TokenRes() {
         }
 

@@ -20,6 +20,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.annotation.Resource;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.List;
 
 import static sun.security.ssl.HandshakeMessage.debug;
@@ -31,21 +32,26 @@ public class UserService {
     private final UserMapper userMapper;
     private final JwtService jwtService;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+    @Resource(name="redisTemplate")
+    private HashOperations<String, String, String> values;
+
+//    @Autowired
+//    private RedisTemplate redisTemplate;
+
 
 //    @Autowired
 //    @SuppressWarnings("unchecked")
 //    RedisTemplate<String, String> redisTemplate = new RedisTemplate<String, String>();
 //
 //    // value operation
-//    ListOperations<String, String> values = redisTemplate.opsForList();
+//    HashOperations<String, String, String> values = redisTemplate.opsForHash();
 
 
     public UserService(final UserMapper userMapper, JwtService jwtService) {
         this.userMapper = userMapper;
         this.jwtService = jwtService;
     }
+
 
 
     //모든 회원 조회
@@ -68,7 +74,6 @@ public class UserService {
 
     /**
      * 로그인
-     *
      * @param user 회원 데이터
      * @return DefaultRes
      */
@@ -81,7 +86,7 @@ public class UserService {
             if (temp == null)
                 return DefaultRes.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER);
 
-            if (temp.getUser_status().equals("disabled"))
+            if(temp.getUser_status().equals("disabled"))
                 return DefaultRes.res(StatusCode.SERVICE_UNAVAILABLE, ResponseMessage.FAIL_DELETE_USER);
 
             //temp의 pwd와 salt가져와
@@ -93,16 +98,21 @@ public class UserService {
             String encodePwd = HasingPwd.hasingPwd(beforeEncodingPwd);
 
 
+
             if (pwd.equals(encodePwd)) {
                 //맞으면 ok메세지 리턴
 
-                System.out.println("idx값은 " + temp.getUser_idx());
+                System.out.println("idx값은 "+temp.getUser_idx());
                 userMapper.loginDateUpdate(temp.getUser_idx());
                 final JwtService.TokenRes tokenDto = new JwtService.TokenRes(jwtService.create(temp.getUser_idx()));
 
-                redisTemplate.opsForValue().set("key:auth", tokenDto.getToken());
-                String value = (String) redisTemplate.opsForValue().get("key:auth");
-                System.out.println(value);
+                HashMap hashMap = new HashMap();
+                hashMap.put("user_id", temp.getUser_id());
+                hashMap.put("user_name", temp.getUser_name());
+
+                values.putAll(tokenDto.getToken(), hashMap);
+                String idxxx = (String)values.get(tokenDto.getToken(), "user_id");
+                System.out.println("id는"+idxxx);
 
 //                String value = (String)redisTemplate.opsForValue().get(key);
 //                Assert.assertEquals("token", value);
@@ -115,13 +125,14 @@ public class UserService {
                 return DefaultRes.res(StatusCode.UNAUTHORIZED, ResponseMessage.LOGIN_FAIL);
             }
 
-        } catch (Exception e) {
+        }catch(Exception e){
             log.debug(e.toString());
             return DefaultRes.res(StatusCode.UNAUTHORIZED, ResponseMessage.LOGIN_FAIL);
         }
 
 
     }
+
 
 
     /**
@@ -135,18 +146,18 @@ public class UserService {
         try {
             String pwd = user.getUser_pwd();
 
-            //salt값생성
+           //salt값생성
             SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
             String saltNum = new Integer(prng.nextInt()).toString();
 
-            //해시함수써서 저장할 비밀번호값 생성
-            String beforeEncodingPwd = saltNum + pwd;
+           //해시함수써서 저장할 비밀번호값 생성
+            String beforeEncodingPwd = saltNum+pwd;
             String encodePwd = HasingPwd.hasingPwd(beforeEncodingPwd);
 
             user.setUser_salt(saltNum);
             user.setUser_pwd(encodePwd);
 
-            //set해서 저장
+           //set해서 저장
             userMapper.save(user);
             return DefaultRes.res(StatusCode.CREATED, ResponseMessage.CREATED_USER);
         } catch (Exception e) {
@@ -158,7 +169,9 @@ public class UserService {
     }
 
 
+
     /**
+
      * 회원 정보 수정
      *
      * @param userIdx 회원 고유 번호

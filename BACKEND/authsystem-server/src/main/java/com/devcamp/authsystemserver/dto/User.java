@@ -8,8 +8,8 @@ import lombok.Setter;
 import java.util.Date;
 
 @Data
-@Getter
-@Setter
+//@Getter
+//@Setter
 public class User {
     private int user_idx;
     private String user_id;
